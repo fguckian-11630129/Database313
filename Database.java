@@ -91,7 +91,7 @@ public class Database {
 						
 		String insert = "insert into java2 (ID, StudentName, Quiz, A1, A2, A3, Exam, Results, Grade) values(" + 
 				stBuilder.toString();
-		output(insert);
+		//output(insert);
 		
 		try {
 			statement.executeUpdate(insert);
@@ -131,15 +131,22 @@ public class Database {
 		}
 								
 		
-		output(row);
+		//output(row);
 		return row;
 	
 	}
 	
 	public void update(String ID, String attribute, String newValue) {
 		
-		String queary = "update Java2 set " + attribute + " = " + newValue + " where ID = " + ID; 
- 		
+		try {
+			String speechMark = "\"";
+			String queary = "update Java2 set " + attribute + " = " + speechMark + newValue + speechMark + " where ID = " + ID; 
+	 		statement.executeUpdate(queary);
+			output(queary);
+		}
+		catch(SQLException e) {
+			
+		}
 		
 	}
 

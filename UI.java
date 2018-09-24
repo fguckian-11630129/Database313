@@ -35,6 +35,8 @@ public class UI extends Application{
 	TextField tfAttribute = new TextField("Attribute");
 	TextField tfValue = new TextField("Value");
 	
+	TextField tfNewValue = new TextField("New Value");
+	
 	
 	
 	@Override
@@ -125,12 +127,106 @@ public class UI extends Application{
 			searchStage.show();
 		}
 		
+		if(rbUpdate.isSelected()) {
+			VBox vbox = new VBox();
+			
+			//button
+			Button btUpdate = new Button("Update");
+			btUpdate.setOnAction(e -> updateDatabase());
+			
+			//setup pane
+			vbox.getChildren().addAll(tfID, tfAttribute, tfNewValue);
+			BorderPane pane = new BorderPane();
+			pane.setTop(vbox);
+			pane.setRight(btUpdate);
+			
+			//set the scene
+			Scene sc = new Scene(pane);
+			Stage searchStage = new Stage();
+			searchStage.setScene(sc);
+			searchStage.show();
+			
+		}
+		
+		if(rbResult.isSelected()) {
+			
+			VBox vbox = new VBox();
+			
+			//button
+			Button btGetResult = new Button("Get Result");
+			btGetResult.setOnAction(e -> getResult());
+			
+			//setup pane
+			vbox.getChildren().addAll(tfQuiz, tfA1, tfA2, tfA3, tfExam);
+			BorderPane pane = new BorderPane();
+			pane.setTop(vbox);
+			pane.setRight(btGetResult);
+			
+			//set the scene
+			Scene sc = new Scene(pane);
+			Stage searchStage = new Stage();
+			searchStage.setScene(sc);
+			searchStage.show();
+			
+			
+		}
+		
+		if(rbGrade.isSelected()) {
+			
+VBox vbox = new VBox();
+			
+			//button
+			Button btGetGrade = new Button("Get Grade");
+			btGetGrade.setOnAction(e -> getGrade());
+			
+			//setup pane
+			vbox.getChildren().addAll(tfQuiz, tfA1, tfA2, tfA3, tfExam);
+			BorderPane pane = new BorderPane();
+			pane.setTop(vbox);
+			pane.setRight(btGetGrade);
+			
+			//set the scene
+			Scene sc = new Scene(pane);
+			Stage searchStage = new Stage();
+			searchStage.setScene(sc);
+			searchStage.show();
+			
+		}
+		
 		
 		
 	}
 	
 	
 	
+	private void getGrade() {
+		double result = control.calculateResults(Integer.parseInt(tfQuiz.getText()), Integer.parseInt(tfA1.getText()), Integer.parseInt(tfA2.getText()), Integer.parseInt(tfA3.getText()), Integer.parseInt(tfExam.getText()));
+
+		String grade = control.calcultateGrade(result);
+		
+		VBox vbox = new VBox();
+		vbox.getChildren().add(new Text("Grade: " + grade));
+		Scene sc = new Scene(vbox);
+		Stage stage = new Stage();
+		stage.setScene(sc);
+		stage.show();
+	}
+
+	private void getResult() {
+		double result = control.calculateResults(Integer.parseInt(tfQuiz.getText()), Integer.parseInt(tfA1.getText()), Integer.parseInt(tfA2.getText()), Integer.parseInt(tfA3.getText()), Integer.parseInt(tfExam.getText()));
+		
+		VBox vbox = new VBox();
+		vbox.getChildren().add(new Text("Result: " + Double.toString(result)));
+		Scene sc = new Scene(vbox);
+		Stage stage = new Stage();
+		stage.setScene(sc);
+		stage.show();
+	}
+
+	private void updateDatabase() {
+		control.updateRecord(tfID.getText(), tfAttribute.getText(), tfNewValue.getText());
+	}
+
 	private void searchDatabase() {
 		String result = control.search(tfAttribute.getText(), tfValue.getText());
 		
