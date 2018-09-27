@@ -37,6 +37,13 @@ public class UI extends Application{
 	
 	TextField tfNewValue = new TextField("New Value");
 	
+	//Hboxes for getResults and getGrade
+	HBox hbQuiz= new HBox();
+	HBox hbA1= new HBox();
+	HBox hbA2 = new HBox();
+	HBox hbA3 = new HBox();
+	HBox hbExam = new HBox();
+	
 	
 	
 	@Override
@@ -83,11 +90,17 @@ public class UI extends Application{
 		if(rbInsert.isSelected()) {
 			
 			VBox vbox = new VBox();
+			Stage insertStage = new Stage();
 					
 			//button
 			Button btProceed = new Button("Proceed");
-			btProceed.setOnAction(e -> proceedInsert());
+			btProceed.setOnAction(e -> 
+				proceedInsert(insertStage)
+				
+			);
 			
+			//setup hboxes
+			hbQuiz.
 			//setup pane
 			vbox.getChildren().addAll(tfID, tfStudentName, tfQuiz, tfA1, tfA2, tfA3, tfExam);
 			BorderPane pane = new BorderPane();
@@ -96,9 +109,10 @@ public class UI extends Application{
 			
 			//set the scene
 			Scene sc = new Scene(pane);
-			Stage insertStage = new Stage();
 			insertStage.setScene(sc);
 			insertStage.show();
+			
+			
 			
 			
 			
@@ -173,7 +187,7 @@ public class UI extends Application{
 		
 		if(rbGrade.isSelected()) {
 			
-VBox vbox = new VBox();
+			VBox vbox = new VBox();
 			
 			//button
 			Button btGetGrade = new Button("Get Grade");
@@ -224,7 +238,18 @@ VBox vbox = new VBox();
 	}
 
 	private void updateDatabase() {
-		control.updateRecord(tfID.getText(), tfAttribute.getText(), tfNewValue.getText());
+		boolean updateSuccessful = control.updateRecord(tfID.getText(), tfAttribute.getText(), tfNewValue.getText());
+		
+		if(!updateSuccessful) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setContentText("Update failed. Please check your inputs");
+			alert.showAndWait();
+		}
+		else {
+			Alert confirmation = new Alert(AlertType.CONFIRMATION);
+			confirmation.setContentText("Update successful");
+			confirmation.showAndWait();
+		}
 	}
 
 	private void searchDatabase() {
@@ -238,7 +263,7 @@ VBox vbox = new VBox();
 		stage.show();
 	}
 
-	private void proceedInsert() {
+	private void proceedInsert(Stage insertStage) {
 		
 		//calculate results and grade
 		try {
@@ -247,25 +272,40 @@ VBox vbox = new VBox();
 			String grade = control.calcultateGrade(result);
 			
 			//insert
-			control.insertRecord(Integer.parseInt(tfID.getText()), tfStudentName.getText(), Integer.parseInt(tfQuiz.getText()), 
+			boolean insertSuccesful = control.insertRecord(Integer.parseInt(tfID.getText()), tfStudentName.getText(), Integer.parseInt(tfQuiz.getText()), 
 					Integer.parseInt(tfA1.getText()), Integer.parseInt(tfA2.getText()), Integer.parseInt(tfA3.getText()), 
 					Integer.parseInt(tfExam.getText()), result, grade);
 			
-			
+			if(!insertSuccesful) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setContentText("Insert Aborted: Please ensure the ID is a Digits and the scores lie btween 0 and 100");
+				alert.showAndWait();
+			}
+			else {
+				Alert confirmation = new Alert(AlertType.CONFIRMATION);
+				confirmation.setContentText("Insertion successful");
+				confirmation.showAndWait();
+			}
 			
 							
 		}
 		catch(NumberFormatException e) {
 			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
 			alert.setContentText("Please ensure you use the correct format for the numeric values");
 			alert.showAndWait();
+		}
+		finally {
+			insertStage.close();
 		}
 		
 		
 		
 		
 	}
+
+	
+
+
 
 	public static void main(String[] args) {
 		

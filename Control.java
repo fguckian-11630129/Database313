@@ -44,8 +44,9 @@ public class Control {
 		}
 	}
 	
-	public void insertRecord(int ID, String studentName, int quiz, int a1, int a2, int a3, int exam, double result, String grade ) {
-		database.insertRecord(ID, studentName, quiz, a1, a2, a3, exam, result, grade);
+	public boolean insertRecord(int ID, String studentName, int quiz, int a1, int a2, int a3, int exam, double result, String grade ) {
+		 boolean insertSuccesful = database.insertRecord(ID, studentName, quiz, a1, a2, a3, exam, result, grade);
+		 return insertSuccesful;
 	}
 	
 	public String search(String attribute, String value) {
@@ -53,8 +54,9 @@ public class Control {
 		return result;
 	}
 	
-	public void updateRecord(String ID, String attribute, String newValue) {
-		database.update(ID, attribute, newValue);
+	public boolean updateRecord(String ID, String attribute, String newValue) {
+		boolean updateSuccessful = database.update(ID, attribute, newValue);
+		return updateSuccessful;
 	}
 	
 	

@@ -2,6 +2,8 @@ package Assignment3;
 
 import java.sql.*;
 
+import javafx.scene.control.Alert.AlertType;
+
 public class Database {
 	
 	Connection connection;
@@ -65,41 +67,63 @@ public class Database {
 		
 	}
 	
-	public void insertRecord(int ID, String studentName, int quiz, int A1, int A2, int A3, int exam, double results, String grade) {
-		String stID = Integer.toString(ID);
-		String stQuiz = Integer.toString(quiz);
-		String stA1 = Integer.toString(A1);
-		String stA2 = Integer.toString(A2);
-		String stA3 = Integer.toString(A3);
-		String stExam = Integer.toString(exam);
-		String stResults = Double.toString(results);
+	public boolean insertRecord(int ID, String studentName, int quiz, int A1, int A2, int A3, int exam, double results, String grade) {
 		
-		String speechMark = "\"";
-		
-		StringBuilder stBuilder = new StringBuilder();
-		stBuilder.append(stID + ", " + speechMark);
-		stBuilder.append(studentName + speechMark + ", ");
-		stBuilder.append(stQuiz + ", ");
-		stBuilder.append(stA1 + ", ");
-		stBuilder.append(stA2 + ", ");
-		stBuilder.append(stA3 + ", ");
-		stBuilder.append(stExam + ", ");
-		stBuilder.append(stResults + ", " + speechMark);
-		stBuilder.append(grade + speechMark + ")");
-		
-		
-						
-		String insert = "insert into java2 (ID, StudentName, Quiz, A1, A2, A3, Exam, Results, Grade) values(" + 
-				stBuilder.toString();
-		//output(insert);
-		
-		try {
-			statement.executeUpdate(insert);
+		if(isOutOfRange(quiz) || isOutOfRange(A1) || isOutOfRange(A2) || isOutOfRange(A3) || isOutOfRange(exam)) {
+			output("Please ensure all your results are between 0 and 100");
+			return false;
 		}
-		catch(Exception e) {
-			output("Problem inserting record");
+		else if(Integer.toString(ID).length() != 8){
+			output("Please ensure the ID is 8 characters in length");
+			return false;
 		}
-		
+		else {
+			String stID = Integer.toString(ID);
+			String stQuiz = Integer.toString(quiz);
+			String stA1 = Integer.toString(A1);
+			String stA2 = Integer.toString(A2);
+			String stA3 = Integer.toString(A3);
+			String stExam = Integer.toString(exam);
+			String stResults = String.format("%.2f", results);
+			
+			String speechMark = "\"";
+			
+			StringBuilder stBuilder = new StringBuilder();
+			stBuilder.append(stID + ", " + speechMark);
+			stBuilder.append(studentName + speechMark + ", ");
+			stBuilder.append(stQuiz + ", ");
+			stBuilder.append(stA1 + ", ");
+			stBuilder.append(stA2 + ", ");
+			stBuilder.append(stA3 + ", ");
+			stBuilder.append(stExam + ", ");
+			stBuilder.append(stResults + ", " + speechMark);
+			stBuilder.append(grade + speechMark + ")");
+			
+			
+							
+			String insert = "insert into java2 (ID, StudentName, Quiz, A1, A2, A3, Exam, Results, Grade) values(" + 
+					stBuilder.toString();
+			//output(insert);
+			
+			try {
+				statement.executeUpdate(insert);
+				return true;
+			}
+			catch(Exception e) {
+				output("Problem inserting record");
+				return false;
+			}
+			
+		}
+	}
+	
+	public boolean isOutOfRange(int score) {
+		if(score <= 100 && score >=0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	
 	public String search(String attribute, String value) {
@@ -136,16 +160,18 @@ public class Database {
 	
 	}
 	
-	public void update(String ID, String attribute, String newValue) {
+	public boolean update(String ID, String attribute, String newValue) {
 		
 		try {
 			String speechMark = "\"";
 			String queary = "update Java2 set " + attribute + " = " + speechMark + newValue + speechMark + " where ID = " + ID; 
 	 		statement.executeUpdate(queary);
-			output(queary);
+	 		
+	 		return(true);
+			//output(queary);
 		}
 		catch(SQLException e) {
-			
+			return(false);
 		}
 		
 	}
