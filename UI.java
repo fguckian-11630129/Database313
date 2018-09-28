@@ -1,5 +1,7 @@
 package Assignment3;
 
+import javax.swing.JComboBox;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -10,6 +12,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -37,12 +41,7 @@ public class UI extends Application{
 	
 	TextField tfNewValue = new TextField("New Value");
 	
-	//Hboxes for getResults and getGrade
-	HBox hbQuiz= new HBox();
-	HBox hbA1= new HBox();
-	HBox hbA2 = new HBox();
-	HBox hbA3 = new HBox();
-	HBox hbExam = new HBox();
+	ComboBox<String> searchCombo;
 	
 	
 	
@@ -77,7 +76,9 @@ public class UI extends Application{
 		borderPane.setRight(btProceed);
 		
 		Scene sc = new Scene(borderPane);
+		
 		primaryStage.setTitle("University Grading System");
+		primaryStage.setMinWidth(400);
 		primaryStage.setScene(sc);
 		primaryStage.show();
 		
@@ -91,6 +92,15 @@ public class UI extends Application{
 			
 			VBox vbox = new VBox();
 			Stage insertStage = new Stage();
+			
+			//Hboxes for insert
+			HBox hbIDi = new HBox();
+			HBox hbNamei = new HBox();
+			HBox hbQuizi= new HBox();
+			HBox hbA1i= new HBox();
+			HBox hbA2i = new HBox();
+			HBox hbA3i = new HBox();
+			HBox hbExami = new HBox();
 					
 			//button
 			Button btProceed = new Button("Proceed");
@@ -99,10 +109,18 @@ public class UI extends Application{
 				
 			);
 			
-			//setup hboxes
-			hbQuiz.
+			
+			//setup hbox
+			hbIDi.getChildren().addAll(new Label  ("ID:               \t"), tfID);
+			hbNamei.getChildren().addAll(new Label("Student Name:"), tfStudentName);
+			hbQuizi.getChildren().addAll(new Label("Quiz:           \t"), tfQuiz);
+			hbA1i.getChildren().addAll(new Label  ("A1:             \t"), tfA1);
+			hbA2i.getChildren().addAll(new Label("A2:             \t"), tfA2);
+			hbA3i.getChildren().addAll(new Label("A3:             \t"), tfA3);
+			hbExami.getChildren().addAll(new Label("Exam:           \t"), tfExam);
+			
 			//setup pane
-			vbox.getChildren().addAll(tfID, tfStudentName, tfQuiz, tfA1, tfA2, tfA3, tfExam);
+			vbox.getChildren().addAll(hbIDi, hbNamei, hbQuizi, hbA1i, hbA2i, hbA3i, hbExami);
 			BorderPane pane = new BorderPane();
 			pane.setTop(vbox);
 			pane.setRight(btProceed);
@@ -113,23 +131,28 @@ public class UI extends Application{
 			insertStage.show();
 			
 			
-			
-			
-			
-			
-			
-			
 		}
 		
 		if(rbSearch.isSelected()) {
 			VBox vbox = new VBox();
 			
+			//hboxes
+			HBox hbAttribute = new HBox();
+			HBox hbValue = new HBox();
+			
 			//button
 			Button btSearch = new Button("Search");
 			btSearch.setOnAction(e -> searchDatabase());
 			
+			//combobox
+			searchCombo = new ComboBox();
+			searchCombo.getItems().addAll("ID", "StudentName", "Quiz", "A1", "A2", "A3", "Exam", "Results", "Grade");
+			
+			hbAttribute.getChildren().addAll(new Label("Attribute:"), searchCombo);
+			hbValue.getChildren().addAll(new Label("Value:\t"), tfValue);
+			
 			//setup pane
-			vbox.getChildren().addAll(tfAttribute, tfValue);
+			vbox.getChildren().addAll(hbAttribute, hbValue);
 			BorderPane pane = new BorderPane();
 			pane.setTop(vbox);
 			pane.setRight(btSearch);
@@ -166,12 +189,26 @@ public class UI extends Application{
 			
 			VBox vbox = new VBox();
 			
+			//Hboxes 
+			HBox hbQuiz= new HBox();
+			HBox hbA1= new HBox();
+			HBox hbA2 = new HBox();
+			HBox hbA3 = new HBox();
+			HBox hbExam = new HBox();
+			
 			//button
 			Button btGetResult = new Button("Get Result");
 			btGetResult.setOnAction(e -> getResult());
 			
+			//setup hbox
+			hbQuiz.getChildren().addAll(new Label("Quiz: \t"), tfQuiz);
+			hbA1.getChildren().addAll(new Label("A1:   \t"), tfA1);
+			hbA2.getChildren().addAll(new Label("A2:   \t"), tfA2);
+			hbA3.getChildren().addAll(new Label("A3:   \t"), tfA3);
+			hbExam.getChildren().addAll(new Label("Exam: \t"), tfExam);
+			
 			//setup pane
-			vbox.getChildren().addAll(tfQuiz, tfA1, tfA2, tfA3, tfExam);
+			vbox.getChildren().addAll(hbQuiz, hbA1, hbA2, hbA3, hbExam);
 			BorderPane pane = new BorderPane();
 			pane.setTop(vbox);
 			pane.setRight(btGetResult);
@@ -189,12 +226,25 @@ public class UI extends Application{
 			
 			VBox vbox = new VBox();
 			
+			HBox hbQuizx= new HBox();
+			HBox hbA1x= new HBox();
+			HBox hbA2x = new HBox();
+			HBox hbA3x = new HBox();
+			HBox hbExamx = new HBox();
+			
 			//button
 			Button btGetGrade = new Button("Get Grade");
 			btGetGrade.setOnAction(e -> getGrade());
 			
+			//setup hbox
+			hbQuizx.getChildren().addAll(new Label("Quiz: \t"), tfQuiz);
+			hbA1x.getChildren().addAll(new Label("A1:   \t"), tfA1);
+			hbA2x.getChildren().addAll(new Label("A2:   \t"), tfA2);
+			hbA3x.getChildren().addAll(new Label("A3:   \t"), tfA3);
+			hbExamx.getChildren().addAll(new Label("Exam: \t"), tfExam);
+			
 			//setup pane
-			vbox.getChildren().addAll(tfQuiz, tfA1, tfA2, tfA3, tfExam);
+			vbox.getChildren().addAll(hbQuizx, hbA1x, hbA2x, hbA3x, hbExamx);
 			BorderPane pane = new BorderPane();
 			pane.setTop(vbox);
 			pane.setRight(btGetGrade);
@@ -253,7 +303,7 @@ public class UI extends Application{
 	}
 
 	private void searchDatabase() {
-		String result = control.search(tfAttribute.getText(), tfValue.getText());
+		String result = control.search(searchCombo.getValue(), tfValue.getText());
 		
 		VBox vbox = new VBox();
 		vbox.getChildren().add(new Text(result));
