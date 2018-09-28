@@ -5,11 +5,11 @@ public class Control {
 	Database database;
 	
 	
-	public Control () {
+	public Control (String username, String password) {
 		
 		this.database = new Database();
 		//initiate the table
-		database.connect("root", "TriLo2");
+		database.connect(username, password);
 		database.createTable();
 		
 	}

@@ -3,6 +3,7 @@ package Assignment3;
 import javax.swing.JComboBox;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -44,12 +45,20 @@ public class UI extends Application{
 	ComboBox<String> searchCombo;
 	ComboBox<String> updateCombo;
 	
+	TextField tfUsername = new TextField("Username");
+	TextField tfPassword = new TextField("Password");
+	
+	String username;
+	String password;
+	
 	
 	
 	@Override
 	public void start(Stage primaryStage) {
 		
-		control = new Control();
+		getUsernameAndPassword();
+		
+		control = new Control(username, password);
 		
 		//create radio buttons and add them to the toggle group
 		rbInsert = new RadioButton("Insert Record");
@@ -86,6 +95,37 @@ public class UI extends Application{
 		
 	}
 	
+	private void getUsernameAndPassword() {
+
+		Stage stage = new Stage();
+			
+		VBox vbox = new VBox(20);
+		Button btOK = new Button("OK");
+		btOK.setAlignment(Pos.CENTER_RIGHT);
+		vbox.getChildren().addAll(new Label ("Please enter username and password for your local host"), tfUsername, tfPassword, btOK);
+		
+		btOK.setOnAction((e) -> {
+			try {
+				username = tfUsername.getText();
+				password = tfPassword.getText();
+				
+			}
+			catch(Exception ex) {
+				
+			}
+			finally {
+				stage.close();
+			}
+		});
+		
+		Scene sc = new Scene(vbox);
+		stage.setScene(sc);
+		stage.showAndWait();
+		
+		
+		
+	}
+
 	private void showProceed() {
 		
 				
