@@ -42,6 +42,7 @@ public class UI extends Application{
 	TextField tfNewValue = new TextField("New Value");
 	
 	ComboBox<String> searchCombo;
+	ComboBox<String> updateCombo;
 	
 	
 	
@@ -128,6 +129,7 @@ public class UI extends Application{
 			//set the scene
 			Scene sc = new Scene(pane);
 			insertStage.setScene(sc);
+			insertStage.setTitle("Insert");
 			insertStage.show();
 			
 			
@@ -148,7 +150,7 @@ public class UI extends Application{
 			searchCombo = new ComboBox();
 			searchCombo.getItems().addAll("ID", "StudentName", "Quiz", "A1", "A2", "A3", "Exam", "Results", "Grade");
 			
-			hbAttribute.getChildren().addAll(new Label("Attribute:"), searchCombo);
+			hbAttribute.getChildren().addAll(new Label("Attribute: "), searchCombo);
 			hbValue.getChildren().addAll(new Label("Value:\t"), tfValue);
 			
 			//setup pane
@@ -161,18 +163,31 @@ public class UI extends Application{
 			Scene sc = new Scene(pane);
 			Stage searchStage = new Stage();
 			searchStage.setScene(sc);
+			searchStage.setTitle("Search");
 			searchStage.show();
 		}
 		
 		if(rbUpdate.isSelected()) {
 			VBox vbox = new VBox();
 			
+			HBox hbID = new HBox();
+			HBox hbAttribute = new HBox();
+			HBox hbValue = new HBox();
+			
 			//button
 			Button btUpdate = new Button("Update");
 			btUpdate.setOnAction(e -> updateDatabase());
 			
+			//combobox
+			updateCombo = new ComboBox();
+			updateCombo.getItems().addAll("ID", "StudentName", "Quiz", "A1", "A2", "A3", "Exam", "Results", "Grade");
+			
+			hbID.getChildren().addAll(new Label ("ID:   \t         "), tfID);
+			hbAttribute.getChildren().addAll(new Label("Attribute: "), updateCombo);
+			hbValue.getChildren().addAll(new Label("Value:\t"), tfNewValue);
+			
 			//setup pane
-			vbox.getChildren().addAll(tfID, tfAttribute, tfNewValue);
+			vbox.getChildren().addAll(hbID, hbAttribute, hbValue);
 			BorderPane pane = new BorderPane();
 			pane.setTop(vbox);
 			pane.setRight(btUpdate);
@@ -181,6 +196,7 @@ public class UI extends Application{
 			Scene sc = new Scene(pane);
 			Stage searchStage = new Stage();
 			searchStage.setScene(sc);
+			searchStage.setTitle("Update");
 			searchStage.show();
 			
 		}
@@ -217,6 +233,8 @@ public class UI extends Application{
 			Scene sc = new Scene(pane);
 			Stage searchStage = new Stage();
 			searchStage.setScene(sc);
+			searchStage.setTitle("Calculate Result");
+			searchStage.setMinWidth(400);
 			searchStage.show();
 			
 			
@@ -253,6 +271,8 @@ public class UI extends Application{
 			Scene sc = new Scene(pane);
 			Stage searchStage = new Stage();
 			searchStage.setScene(sc);
+			searchStage.setTitle("Calculate Grade");
+			searchStage.setMinWidth(400);
 			searchStage.show();
 			
 		}
@@ -264,31 +284,47 @@ public class UI extends Application{
 	
 	
 	private void getGrade() {
-		double result = control.calculateResults(Integer.parseInt(tfQuiz.getText()), Integer.parseInt(tfA1.getText()), Integer.parseInt(tfA2.getText()), Integer.parseInt(tfA3.getText()), Integer.parseInt(tfExam.getText()));
-
-		String grade = control.calcultateGrade(result);
-		
-		VBox vbox = new VBox();
-		vbox.getChildren().add(new Text("Grade: " + grade));
-		Scene sc = new Scene(vbox);
-		Stage stage = new Stage();
-		stage.setScene(sc);
-		stage.show();
+		try {
+			double result = control.calculateResults(Integer.parseInt(tfQuiz.getText()), Integer.parseInt(tfA1.getText()), Integer.parseInt(tfA2.getText()), Integer.parseInt(tfA3.getText()), Integer.parseInt(tfExam.getText()));
+	
+			String grade = control.calcultateGrade(result);
+			
+			VBox vbox = new VBox();
+			vbox.getChildren().add(new Text("Grade: " + grade));
+			Scene sc = new Scene(vbox);
+			Stage stage = new Stage();
+			stage.setScene(sc);
+			stage.show();
+		}
+		catch(NumberFormatException e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setContentText("Calculation failed. Please check your inputs");
+			alert.showAndWait();
+		}
 	}
 
 	private void getResult() {
-		double result = control.calculateResults(Integer.parseInt(tfQuiz.getText()), Integer.parseInt(tfA1.getText()), Integer.parseInt(tfA2.getText()), Integer.parseInt(tfA3.getText()), Integer.parseInt(tfExam.getText()));
 		
-		VBox vbox = new VBox();
-		vbox.getChildren().add(new Text("Result: " + Double.toString(result)));
-		Scene sc = new Scene(vbox);
-		Stage stage = new Stage();
-		stage.setScene(sc);
-		stage.show();
+		try {
+			double result = control.calculateResults(Integer.parseInt(tfQuiz.getText()), Integer.parseInt(tfA1.getText()), Integer.parseInt(tfA2.getText()), Integer.parseInt(tfA3.getText()), Integer.parseInt(tfExam.getText()));
+			
+			VBox vbox = new VBox();
+			vbox.getChildren().add(new Text("Result: " + String.format("%.2f", result)));
+			Scene sc = new Scene(vbox);
+			Stage stage = new Stage();
+			stage.setScene(sc);
+			stage.show();
+		}
+		catch(NumberFormatException e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setContentText("Calculation failed. Please check your inputs");
+			alert.showAndWait();
+		}
 	}
 
 	private void updateDatabase() {
-		boolean updateSuccessful = control.updateRecord(tfID.getText(), tfAttribute.getText(), tfNewValue.getText());
+		boolean updateSuccessful = control.updateRecord(tfID.getText(), updateCombo.getValue(), tfNewValue.getText());
+		String attribute = updateCombo.getValue();
 		
 		if(!updateSuccessful) {
 			Alert alert = new Alert(AlertType.ERROR);
@@ -296,6 +332,12 @@ public class UI extends Application{
 			alert.showAndWait();
 		}
 		else {
+			if(attribute.equals("Quiz") || attribute.equals("A1") || attribute.equals("A2") || attribute.equals("A3") || attribute.equals("Exam")) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setContentText("You have updated an assesment item. Please update the final result. Please also check"
+						+ " if grade needs to be updated.");
+				alert.showAndWait();
+			}
 			Alert confirmation = new Alert(AlertType.CONFIRMATION);
 			confirmation.setContentText("Update successful");
 			confirmation.showAndWait();
@@ -305,12 +347,19 @@ public class UI extends Application{
 	private void searchDatabase() {
 		String result = control.search(searchCombo.getValue(), tfValue.getText());
 		
-		VBox vbox = new VBox();
-		vbox.getChildren().add(new Text(result));
-		Scene sc = new Scene(vbox);
-		Stage stage = new Stage();
-		stage.setScene(sc);
-		stage.show();
+		if(result != null) {
+			VBox vbox = new VBox();
+			vbox.getChildren().add(new Text(result));
+			Scene sc = new Scene(vbox);
+			Stage stage = new Stage();
+			stage.setScene(sc);
+			stage.show();
+		}
+		else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setContentText("Search unsuccessful. Please check your inputs.");
+			alert.showAndWait();
+		}
 	}
 
 	private void proceedInsert(Stage insertStage) {
@@ -328,7 +377,7 @@ public class UI extends Application{
 			
 			if(!insertSuccesful) {
 				Alert alert = new Alert(AlertType.ERROR);
-				alert.setContentText("Insert Aborted: Please ensure the ID is a Digits and the scores lie btween 0 and 100");
+				alert.setContentText("Insert Aborted: Please ensure the ID is an 8 digit number and the scores lie btween 0 and 100");
 				alert.showAndWait();
 			}
 			else {

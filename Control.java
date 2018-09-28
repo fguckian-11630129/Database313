@@ -56,6 +56,7 @@ public class Control {
 	
 	public boolean updateRecord(String ID, String attribute, String newValue) {
 		boolean updateSuccessful = database.update(ID, attribute, newValue);
+		
 		return updateSuccessful;
 	}
 	

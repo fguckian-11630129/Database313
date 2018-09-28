@@ -70,11 +70,11 @@ public class Database {
 	public boolean insertRecord(int ID, String studentName, int quiz, int A1, int A2, int A3, int exam, double results, String grade) {
 		
 		if(isOutOfRange(quiz) || isOutOfRange(A1) || isOutOfRange(A2) || isOutOfRange(A3) || isOutOfRange(exam)) {
-			output("Please ensure all your results are between 0 and 100");
+			//output("Please ensure all your results are between 0 and 100");
 			return false;
 		}
 		else if(Integer.toString(ID).length() != 8){
-			output("Please ensure the ID is 8 characters in length");
+			//output("Please ensure the ID is 8 characters in length");
 			return false;
 		}
 		else {
@@ -141,9 +141,9 @@ public class Database {
 			try {
 				
 				while(resSet.next()) {
-					row = "ID:" + "\t" + resSet.getString(1) + "\n" + "Student Name:" + "\t" + resSet.getString(2) + "\n" + "Quiz:" + "\t" + resSet.getString(3) + "\n" +
-							 "A1:" + "\t" + resSet.getString(4) + "\n" +  "A2:" + "\t" + resSet.getString(5) + "\n" +  "A3:" + "\t" +resSet.getString(6) + "\n" +  "Exam:" + "\t" +
-							resSet.getString(7) + "\n" +  "Result:" + "\t" + resSet.getString(8) + "\n" +  "Grade:" + "\t" +resSet.getString(9);
+					row = "ID: " + "\t\t\t" + resSet.getString(1) + "\n" + "Student Name: " + "" + resSet.getString(2) + "\n" + "Quiz: " + "\t\t" + resSet.getString(3) + "\n" +
+							 "A1: " + "\t\t\t" + resSet.getString(4) + "\n" +  "A2:" + "\t\t\t" + resSet.getString(5) + "\n" +  "A3: " + "\t\t\t" +resSet.getString(6) + "\n" +  "Exam: " + "\t\t" +
+							resSet.getString(7) + "\n" +  "Result: " + "\t\t" + resSet.getString(8) + "\n" +  "Grade: " + "\t\t" +resSet.getString(9);
 				}
 			}
 			catch(SQLException e) {
@@ -162,16 +162,28 @@ public class Database {
 	
 	public boolean update(String ID, String attribute, String newValue) {
 		
+		if(attribute.equals("Quiz") || attribute.equals("A1") || attribute.equals("A2") || attribute.equals("A3") || attribute.equals("Exam")){
+			if(isOutOfRange(Integer.parseInt(newValue))){
+				return false;
+			}
+		}
+		
 		try {
 			String speechMark = "\"";
 			String queary = "update Java2 set " + attribute + " = " + speechMark + newValue + speechMark + " where ID = " + ID; 
-	 		statement.executeUpdate(queary);
+	 		//output(queary);
+			int updateStatus = statement.executeUpdate(queary);
 	 		
-	 		return(true);
-			//output(queary);
+			if(updateStatus>0) {
+		 		return true;
+				//output(queary);
+			}
+			else {
+				return false;
+			}
 		}
 		catch(SQLException e) {
-			return(false);
+			return false;
 		}
 		
 	}
